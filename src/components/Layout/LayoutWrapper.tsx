@@ -1,15 +1,13 @@
+// components/Layout/LayoutWrapper.tsx
+import { ReactNode } from 'react';
+
 type Props = {
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export const LayoutWrapper = ({ children }: Props) => {
     return (
-        <div
-            style={{
-                paddingLeft: window.innerWidth >= 768 ? '120px' : '0px',
-                transition: 'padding 0.3s ease',
-            }}
-        >
+        <div className="transition-all duration-300 ease-in-out pl-0 md:pl-[120px]">
             {children}
         </div>
     );

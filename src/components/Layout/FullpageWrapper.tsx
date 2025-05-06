@@ -10,9 +10,11 @@ type Props = {
     sections: Section[];
     activeIndex: number;
     setActiveIndex: (index: number) => void;
+    disableScroll?: boolean;
 };
 
-export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props) => {
+
+export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disableScroll }: Props) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const isScrollingRef = useRef(false);
 
@@ -32,6 +34,10 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props
         const currentSectionEl = document.getElementById(section.id);
         if (!currentSectionEl) return true;
 
+        if ((e.target as HTMLElement).closest('[data-scroll-lock="true"]')) {
+            return;
+        }
+
         const scrollable = currentSectionEl.querySelector('[data-scrollable]') as HTMLElement;
         if (!scrollable) return true;
 
@@ -45,11 +51,11 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props
 
     useEffect(() => {
         const handleWheel = (e: WheelEvent) => {
-            if (isScrollingRef.current) return;
+            if (isScrollingRef.current || disableScroll) return;
 
-            if (e.deltaY > 50 && isScrollAllowed('down')) {
+            if (e.deltaY > 10 && isScrollAllowed('down')) {
                 scrollToIndex(activeIndex + 1);
-            } else if (e.deltaY < -50 && isScrollAllowed('up')) {
+            } else if (e.deltaY < -10 && isScrollAllowed('up')) {
                 scrollToIndex(activeIndex - 1);
             }
         };
@@ -59,7 +65,7 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props
             return {
                 start: (e: TouchEvent) => (startY = e.touches[0].clientY),
                 move: (e: TouchEvent) => {
-                    if (isScrollingRef.current) return;
+                    if (isScrollingRef.current || disableScroll) return;
 
                     const deltaY = startY - e.touches[0].clientY;
 
@@ -75,7 +81,7 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props
         })();
 
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (isScrollingRef.current) return;
+            if (isScrollingRef.current || disableScroll) return;
 
             if (e.key === 'ArrowDown' && isScrollAllowed('down')) {
                 scrollToIndex(activeIndex + 1);
@@ -96,7 +102,7 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props
             node?.removeEventListener('touchmove', handleTouch.move);
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [activeIndex, sections]);
+    }, [activeIndex, sections, disableScroll]);
 
     useEffect(() => {
         const target = document.getElementById(sections[activeIndex]?.id);
@@ -108,29 +114,17 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex }: Props
     return (
         <div
             ref={containerRef}
-            style={{
-                height: '100vh',
-                width: '100%',
-                overflow: 'hidden',
-                position: 'relative',
-            }}
+            className="relative h-screen w-full overflow-hidden"
         >
             <div
-                style={{
-                    height: `${sections.length * 100}vh`,
-                    transition: 'transform 0.8s cubic-bezier(0.77, 0, 0.175, 1)',
-                }}
+                className="transition-transform duration-[800ms] ease-[cubic-bezier(0.77,0,0.175,1)] snap-y snap-mandatory"
+                style={{ height: `${sections.length * 100}vh` }}
             >
-                {sections.map(({ id, component }) => (
+            {sections.map(({ id, component }) => (
                     <section
                         key={id}
                         id={id}
-                        style={{
-                            height: '100vh',
-                            scrollSnapAlign: 'start',
-                            overflow: 'hidden',
-                            position: 'relative',
-                        }}
+                        className="h-screen w-full overflow-hidden relative snap-start"
                     >
                         {component}
                     </section>

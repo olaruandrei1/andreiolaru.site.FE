@@ -1,4 +1,3 @@
-// components/Carousel/Carousel.tsx
 import React, { useRef, useState, useEffect } from 'react';
 
 export type CarouselProps = {
@@ -10,19 +9,16 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showHint, setShowHint] = useState(true);
 
-    // Dimensions
     const boxWidth = 500;
     const boxHeight = 550;
     const gap = 50;
 
-    // hide hint on first scroll
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;
         const handleScroll = () => {
-            if (showHint) {
-                setShowHint(false);
-            }
+            if (showHint) setShowHint(false);
+
             const nodes = Array.from(el.children) as HTMLElement[];
             const centerX = el.scrollLeft + el.offsetWidth / 2;
             const distances = nodes.map(node =>
@@ -35,12 +31,24 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
         return () => el.removeEventListener('scroll', handleScroll);
     }, [currentIndex, showHint]);
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowRight') {
+                scrollTo(currentIndex + 1);
+            } else if (e.key === 'ArrowLeft') {
+                scrollTo(currentIndex - 1);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentIndex]);
+
     const scrollTo = (idx: number) => {
         const el = containerRef.current;
         if (!el || idx < 0 || idx >= children.length) return;
-        if (showHint) {
-            setShowHint(false);
-        }
+        if (showHint) setShowHint(false);
+
         const child = el.children[idx] as HTMLElement;
         el.scrollTo({
             left: child.offsetLeft - (el.offsetWidth - child.offsetWidth) / 2,
@@ -50,67 +58,34 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
     };
 
     return (
-        <div
-            style={{
-                position: 'relative',
-                width: '100%',
-                overflow: 'hidden',
-                paddingBottom: '3rem',
-            }}
-        >
+        <div className="relative w-full overflow-hidden pb-12">
             {showHint && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        top: '30%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        zIndex: 10,
-                        background: 'rgba(0,0,0,0.3)',  // mai puțin transparent decât înainte
-                        color: '#fff',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontFamily: 'sans-serif',
-                        pointerEvents: 'none',
-                        textAlign: 'center',
-                    }}
-                >
+                <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-black/30 text-white text-sm text-center px-4 py-2 rounded-md pointer-events-none">
                     ← Use arrows →
-                    <br/>
+                    <br />
                     or
-                    <br/>
+                    <br />
                     Trackpad
-                    <br/>
+                    <br />
                     or
-                    <br/>
+                    <br />
                     Pagination dots
                 </div>
             )}
 
             <div
                 ref={containerRef}
-                style={{
-                    display: 'flex',
-                    gap: `${gap}px`,
-                    overflowX: 'auto',
-                    scrollSnapType: 'x mandatory',
-                    padding: `0 calc((100% - ${boxWidth}px) / 2)`,
-                    height: `${boxHeight + 100}px`,
-                    scrollbarWidth: 'none',
-                }}
+                className="
+                    flex overflow-x-auto gap-[10px] md:gap-[50px] scroll-snap-x scroll-smooth no-scrollbar h-[650px]
+                    px-[calc((100%-310px)/2)] md:px-[calc((100%-500px)/2)]
+                "
             >
                 {children.map((child, idx) => (
                     <div
                         key={idx}
-                        style={{
-                            width: `${boxWidth}px`,
-                            height: `${boxHeight}px`,
-                            flex: '0 0 auto',
-                            scrollSnapAlign: 'center',
-                            opacity: idx === currentIndex ? 1 : 0.4,
-                            transition: 'opacity 0.3s ease',
-                        }}
+                        className={`w-[310px] md:w-[500px] h-[550px] flex-none scroll-snap-center transition-opacity duration-300 ${
+                            idx === currentIndex ? 'opacity-100' : 'opacity-40'
+                        }`}
                         onClick={() => scrollTo(idx)}
                     >
                         {child}
@@ -118,27 +93,17 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
                 ))}
             </div>
 
-            {/* Navigation Dots */}
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '1rem',
-                    gap: '0.75rem',
-                }}
-            >
+
+            <div className="flex justify-center mt-4 gap-3">
                 {children.map((_, idx) => (
                     <div
                         key={idx}
                         onClick={() => scrollTo(idx)}
-                        style={{
-                            width: idx === currentIndex ? '12px' : '8px',
-                            height: idx === currentIndex ? '12px' : '8px',
-                            borderRadius: '50%',
-                            backgroundColor: idx === currentIndex ? '#007AFF' : '#D1D1D6',
-                            transition: 'all 0.3s ease',
-                            cursor: 'pointer',
-                        }}
+                        className={`transition-all duration-300 cursor-pointer rounded-full ${
+                            idx === currentIndex
+                                ? 'w-3 h-3 bg-blue-500'
+                                : 'w-2 h-2 bg-gray-300'
+                        }`}
                     />
                 ))}
             </div>

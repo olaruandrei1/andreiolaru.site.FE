@@ -4,25 +4,14 @@ type Props = {
 
 export const CvBox = ({ downloadUrl }: Props) => {
     return (
-        <div style={{
-            marginTop: '3rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }}>
-            <p style={{ marginBottom: '1rem', color: '#333' }}>Want to know more? You can download my full CV below.</p>
+        <div className="mt-12 flex flex-col items-center text-center">
+            <p className="mb-4 text-gray-700">
+                Want to know more? You can download my full CV below.
+            </p>
             <a
                 href={downloadUrl}
                 download
-                style={{
-                    background: '#007AFF',
-                    color: '#fff',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '999px',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    transition: 'background 0.3s',
-                }}
+                className="bg-blue-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-600 transition-colors duration-300"
             >
                 Download CV
             </a>

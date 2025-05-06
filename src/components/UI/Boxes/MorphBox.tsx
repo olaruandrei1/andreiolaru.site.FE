@@ -1,41 +1,39 @@
+import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
+
 type Props = {
     title?: string;
-    children: React.ReactNode;
-    style?: React.CSSProperties;
+    children: ReactNode;
+    className?: string;
 };
 
-export const MorphBox = ({ title, children, style }: Props) => {
+export const MorphBox = ({ title, children, className = '' }: Props) => {
     return (
-        <div
-            style={{
-                backdropFilter: 'blur(24px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-                background: 'rgba(255, 255, 255, 0.35)',
-                borderRadius: '24px',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                padding: '2rem',
-                boxShadow:
-                    '0 10px 30px rgba(0, 0, 0, 0.08), inset 0 0 0 0.5px rgba(255,255,255,0.1)',
-                transition: 'all 0.3s ease',
-                maxWidth: '100%',
-                boxSizing: 'border-box',
-                ...style
+        <motion.div
+            initial={{ opacity: 0, scale: 0.975 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+                duration: 0.35,
+                ease: [0.16, 1, 0.3, 1], // Apple-style bezier
             }}
+            className={`
+        will-change-transform overflow-hidden
+        w-full max-w-full md:max-w-xl lg:max-w-2xl
+        rounded-3xl border border-white/20
+        backdrop-blur-2xl bg-white/30
+        shadow-[0_10px_30px_rgba(0,0,0,0.08)]
+        transition-all duration-300 ease-in-out
+        max-h-[90vh] overflow-y-auto
+        p-6 sm:p-8
+        ${className}
+      `}
         >
             {title && (
-                <h3
-                    style={{
-                        fontSize: '1.3rem',
-                        marginBottom: '1rem',
-                        fontWeight: 600,
-                        color: '#1c1c1e',
-                        textShadow: '0 1px 0 rgba(255,255,255,0.4)'
-                    }}
-                >
+                <h3 className="text-lg font-semibold text-neutral-900 mb-4 drop-shadow-sm">
                     {title}
                 </h3>
             )}
             {children}
-        </div>
-    )
-}
+        </motion.div>
+    );
+};
