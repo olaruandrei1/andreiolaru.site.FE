@@ -5,7 +5,7 @@ import { Carousel } from '../../UI/Carousel/GenericMotionCarousel';
 
 export const Projects: React.FC = () => {
     const { data, loading } = useProjects();
-    const [pages, setPages] = useState<any[][]>([]);
+    const [pages, setPages] = useState<typeof data[]>([]);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export const Projects: React.FC = () => {
     useEffect(() => {
         if (!data || data.length === 0) return;
 
-        const perPage = 3; // mereu 3 per slide
+        const perPage = 3;
         const newPages = [];
         for (let i = 0; i < data.length; i += perPage) {
             newPages.push(data.slice(i, i + perPage));
@@ -42,18 +42,17 @@ export const Projects: React.FC = () => {
 
             <Carousel>
                 {pages.map((group, idx) => (
-                    <div
-                        key={idx}
-                        className={`grid grid-cols-1 gap-y-6 w-full`}
-                    >
-                        {group.map((project, index) => (
+                    <div key={idx} className="grid grid-cols-1 gap-y-6 w-full">
+                        {group!.map((project, index) => (
                             <MorphBox
                                 key={index}
                                 title={undefined}
                                 className="w-full aspect-[16/5] min-h-[140px] md:min-h-[150px] flex flex-col justify-between bg-white p-4 md:p-6 shadow-md hover:shadow-xl transition-all duration-300"
                             >
                                 <div className="space-y-3">
-                                    <h3 className="text-lg font-semibold text-neutral-900">{project.title}</h3>
+                                    <h3 className="text-lg font-semibold text-neutral-900">
+                                        {project.title}
+                                    </h3>
 
                                     <div className="flex flex-wrap gap-2">
                                         {(isMobile
@@ -61,16 +60,21 @@ export const Projects: React.FC = () => {
                                                 : project.technologies
                                         ).map(tech => (
                                             <span
-                                                key={tech}
-                                                className="text-sm px-2 py-1 rounded bg-neutral-100 text-neutral-700 font-medium shadow-sm"
+                                                key={tech.name}
+                                                className="text-sm px-2 py-1 rounded bg-neutral-100 text-neutral-700 font-medium shadow-sm flex items-center gap-1"
                                             >
-          {tech}
-        </span>
+                                                <img
+                                                    src={tech.icon}
+                                                    alt={tech.name}
+                                                    className="w-4 h-4"
+                                                />
+                                                {tech.name}
+                                            </span>
                                         ))}
                                         {isMobile && project.technologies.length > 6 && (
                                             <span className="text-sm px-2 py-1 rounded bg-yellow-100 text-yellow-800 font-medium shadow-sm">
-          +⋯
-        </span>
+                                                +⋯
+                                            </span>
                                         )}
                                     </div>
                                 </div>
@@ -84,8 +88,6 @@ export const Projects: React.FC = () => {
                                     View Repo ↗
                                 </a>
                             </MorphBox>
-
-
                         ))}
                     </div>
                 ))}

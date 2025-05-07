@@ -1,13 +1,14 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 type Props = {
     title?: string;
     children: ReactNode;
     className?: string;
+    style?: React.CSSProperties;
 };
 
-export const MorphBox = ({ title, children, className = '' }: Props) => {
+export const MorphBox = ({ title, children, className = '', style }: Props) => {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.975 }}
@@ -27,6 +28,7 @@ export const MorphBox = ({ title, children, className = '' }: Props) => {
         p-6 sm:p-8
         ${className}
       `}
+            style={style}
         >
             {title && (
                 <h3 className="text-lg font-semibold text-neutral-900 mb-4 drop-shadow-sm">

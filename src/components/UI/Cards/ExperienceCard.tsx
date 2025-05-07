@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MorphBox } from '../Boxes/MorphBox.tsx';
 import { Experience as ExpType } from '../../../api/useExperience.tsx';
 

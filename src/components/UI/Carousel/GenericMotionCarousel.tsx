@@ -9,10 +9,6 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showHint, setShowHint] = useState(true);
 
-    const boxWidth = 500;
-    const boxHeight = 550;
-    const gap = 50;
-
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;

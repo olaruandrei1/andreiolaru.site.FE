@@ -1,5 +1,5 @@
-// api/useSocialLinks.ts
-import { useState, useEffect } from 'react';
+import { useCachedFetch } from './configuration/useCachedFetch';
+import api from './configuration/axios';
 
 export type SocialLinks = {
     linkedin: string;
@@ -7,24 +7,9 @@ export type SocialLinks = {
     x: string;
 };
 
-export const useSocialLinks = (): { data: SocialLinks | null; loading: boolean } => {
-    const [data, setData] = useState<SocialLinks | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // mock fetch; replace with axios/fetch when API is ready
-        const mock: SocialLinks = {
-            linkedin: 'https://www.linkedin.com/in/yourprofile',
-            github:   'https://github.com/yourusername',
-            x:        'https://x.com/yourhandle',
-        };
-        const timer = setTimeout(() => {
-            setData(mock);
-            setLoading(false);
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    return { data, loading };
+export const useSocialLinks = () => {
+    return useCachedFetch<SocialLinks>(
+        'social-links',
+        () => api.get('/contact').then(res => res.data)
+    );
 };

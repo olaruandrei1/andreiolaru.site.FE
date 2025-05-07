@@ -45,7 +45,7 @@ export const Experience: React.FC<Props> = ({ setDisableScroll }) => {
             </div>
 
             {/* Modal */}
-            {openIdx !== null && (
+            {openIdx !== null && data[openIdx] && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
                     onClick={(e) => {

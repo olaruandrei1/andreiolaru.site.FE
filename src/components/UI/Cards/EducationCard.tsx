@@ -1,5 +1,6 @@
-import { MorphBox } from '../../UI/Boxes/MorphBox';
+import { MorphBox } from '../Boxes/MorphBox.tsx';
 import { Education as EduType, EducationVariant } from '../../../api/useEducation';
+import React from "react";
 
 type Props = {
     edu: EduType;

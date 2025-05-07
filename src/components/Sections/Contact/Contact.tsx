@@ -11,9 +11,13 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import { useSocialLinks } from '../../../api/useSocialLinks';
 import { useMediaQuery } from '@mui/material';
 import { Carousel } from '../../UI/Carousel/GenericMotionCarousel';
+import {sendContactMessage} from "../../../api/sendContactMessage.tsx";
+import {useMe} from "../../../api/useMe.tsx";
 
 export const Contact: React.FC = () => {
     const { data: links, loading: linksLoading } = useSocialLinks();
+    const { data: me } = useMe();
+
     const [form, setForm] = useState({ name: '', email: '', message: '' });
     const [errors, setErrors] = useState<{ [K in keyof typeof form]?: string }>({});
     const [submitted, setSubmitted] = useState(false);
@@ -35,14 +39,21 @@ export const Contact: React.FC = () => {
         return newErrors;
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const newErr = validate();
         if (Object.keys(newErr).length) {
             setErrors(newErr);
             return;
         }
-        setSubmitted(true);
+
+        try {
+            await sendContactMessage(form);
+            setSubmitted(true);
+        } catch (err) {
+            console.error('Failed to send message:', err);
+            alert('Oops! Something went wrong. Please try again later.');
+        }
     };
 
     return (
@@ -120,8 +131,12 @@ export const Contact: React.FC = () => {
                                     alt="LinkedIn profile"
                                     className="w-24 h-24 rounded-full mx-auto mb-4"
                                 />
-                                <h3 className="text-lg font-semibold text-neutral-900">Andrei Olaru</h3>
-                                <p className="text-sm text-neutral-600 mb-4">Software Developer • Open to Opportunities</p>
+                                <h3 className="text-lg font-semibold text-neutral-900">
+                                    {me?.title}
+                                </h3>
+                                <p className="text-sm text-neutral-600 mb-4">
+                                    {me?.job}
+                                </p>
                                 <a
                                     href={links?.linkedin}
                                     target="_blank"
@@ -232,8 +247,12 @@ export const Contact: React.FC = () => {
                                     alt="LinkedIn profile"
                                     className="w-24 h-24 rounded-full mx-auto mb-4"
                                 />
-                                <h3 className="text-lg font-semibold text-neutral-900">Andrei Olaru</h3>
-                                <p className="text-sm text-neutral-600 mb-4">Software Developer • Open to Opportunities</p>
+                                <h3 className="text-lg font-semibold text-neutral-900">
+                                    {me?.title}
+                                </h3>
+                                <p className="text-sm text-neutral-600 mb-4">
+                                    {me?.job}
+                                </p>
                                 <a
                                     href={links?.linkedin}
                                     target="_blank"
