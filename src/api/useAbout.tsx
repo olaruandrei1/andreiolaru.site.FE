@@ -2,7 +2,8 @@ import { useCachedFetch } from './configuration/useCachedFetch';
 import api from './configuration/axios';
 
 export type AboutData = {
-    textBlocks: { title: string; content: string }[];
+    whoIAm: { title: string; content: string };
+    mindset: { title: string; content: string };
     cvDownloadUrl: string;
 };
 

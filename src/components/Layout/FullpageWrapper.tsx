@@ -13,7 +13,6 @@ type Props = {
     disableScroll?: boolean;
 };
 
-
 export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disableScroll }: Props) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const isScrollingRef = useRef(false);
@@ -27,15 +26,16 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disable
         }, 900);
     };
 
-    const isScrollAllowed = (direction: 'up' | 'down') => {
+    const isScrollAllowed = (direction: 'up' | 'down', e: Event) => {
         const section = sections[activeIndex];
         if (!section.lockScroll) return true;
 
         const currentSectionEl = document.getElementById(section.id);
         if (!currentSectionEl) return true;
 
-        if ((e.target as HTMLElement).closest('[data-scroll-lock="true"]')) {
-            return;
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-scroll-lock="true"]')) {
+            return false;
         }
 
         const scrollable = currentSectionEl.querySelector('[data-scrollable]') as HTMLElement;
@@ -53,9 +53,9 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disable
         const handleWheel = (e: WheelEvent) => {
             if (isScrollingRef.current || disableScroll) return;
 
-            if (e.deltaY > 10 && isScrollAllowed('down')) {
+            if (e.deltaY > 10 && isScrollAllowed('down', e)) {
                 scrollToIndex(activeIndex + 1);
-            } else if (e.deltaY < -10 && isScrollAllowed('up')) {
+            } else if (e.deltaY < -10 && isScrollAllowed('up', e)) {
                 scrollToIndex(activeIndex - 1);
             }
         };
@@ -70,9 +70,9 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disable
                     const deltaY = startY - e.touches[0].clientY;
 
                     if (Math.abs(deltaY) > 50) {
-                        if (deltaY > 0 && isScrollAllowed('down')) {
+                        if (deltaY > 0 && isScrollAllowed('down', e)) {
                             scrollToIndex(activeIndex + 1);
-                        } else if (deltaY < 0 && isScrollAllowed('up')) {
+                        } else if (deltaY < 0 && isScrollAllowed('up', e)) {
                             scrollToIndex(activeIndex - 1);
                         }
                     }
@@ -83,9 +83,9 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disable
         const handleKeyDown = (e: KeyboardEvent) => {
             if (isScrollingRef.current || disableScroll) return;
 
-            if (e.key === 'ArrowDown' && isScrollAllowed('down')) {
+            if (e.key === 'ArrowDown' && isScrollAllowed('down', e)) {
                 scrollToIndex(activeIndex + 1);
-            } else if (e.key === 'ArrowUp' && isScrollAllowed('up')) {
+            } else if (e.key === 'ArrowUp' && isScrollAllowed('up', e)) {
                 scrollToIndex(activeIndex - 1);
             }
         };
@@ -120,7 +120,7 @@ export const FullpageWrapper = ({ sections, activeIndex, setActiveIndex, disable
                 className="transition-transform duration-[800ms] ease-[cubic-bezier(0.77,0,0.175,1)] snap-y snap-mandatory"
                 style={{ height: `${sections.length * 100}vh` }}
             >
-            {sections.map(({ id, component }) => (
+                {sections.map(({ id, component }) => (
                     <section
                         key={id}
                         id={id}

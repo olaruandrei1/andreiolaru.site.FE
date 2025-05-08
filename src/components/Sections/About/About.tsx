@@ -9,6 +9,8 @@ export const About = () => {
 
     if (loading || !data) return null;
 
+    const blocks = [data.whoIAm, data.mindset];
+
     return (
         <section
             id="about"
@@ -19,7 +21,7 @@ export const About = () => {
             </h2>
 
             <div className="flex flex-col gap-8 w-full">
-                {data.textBlocks.map((block, i) => {
+                {blocks.map((block, i) => {
                     const charCount = block.content.length;
                     const truncated = charCount > 600;
                     const fontSizeClass =
@@ -66,11 +68,11 @@ export const About = () => {
                     />
                     <div className="fixed top-1/2 left-1/2 w-[90vw] max-w-2xl h-[70vh] -translate-x-1/2 -translate-y-1/2 z-50 overflow-y-auto">
                         <MorphBox
-                            title={data.textBlocks[openIdx].title}
+                            title={blocks[openIdx].title}
                             className="bg-white"
                         >
                             <p className="text-base text-neutral-800 leading-relaxed">
-                                {data.textBlocks[openIdx].content}
+                                {blocks[openIdx].content}
                             </p>
                             <button
                                 onClick={() => setOpenIdx(null)}

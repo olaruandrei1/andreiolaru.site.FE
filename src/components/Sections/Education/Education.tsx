@@ -23,13 +23,15 @@ export const Education: React.FC = () => {
                     </h2>
 
                     <Carousel>
-                        {data!.map((edu, idx) => (
-                            <EducationCard
-                                key={idx}
-                                edu={edu}
-                                onReadMore={() => setOpenIdx(idx)}
-                            />
-                        ))}
+                        {data && data.length > 0
+                            ? data.map((edu, idx) => (
+                                <EducationCard
+                                    key={idx}
+                                    edu={edu}
+                                    onReadMore={() => setOpenIdx(idx)}
+                                />
+                            ))
+                            : null}
                     </Carousel>
                 </div>
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     headers: {
-        'X-BFF-For': import.meta.env.VITE_API_KEY,
+        'X-BFF-Key': import.meta.env.VITE_API_KEY,
     },
     timeout: 5000,
 });

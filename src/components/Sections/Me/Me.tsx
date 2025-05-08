@@ -33,7 +33,6 @@ export const Me = () => {
                 }}
             />
 
-            {/* Box alb, vizibil, central jos */}
             <div className="absolute bottom-16 w-full flex justify-center px-4 z-10">
                 <MorphBox className="max-w-xl w-full text-center p-6 md:p-8">
                     <div

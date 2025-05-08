@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 
 export type CarouselProps = {
-    children: React.ReactNode[];
+    children: React.ReactNode | React.ReactNode[]; // acceptă și 1 copil, și array
 };
 
 export const Carousel: React.FC<CarouselProps> = ({ children }) => {
@@ -9,9 +9,12 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showHint, setShowHint] = useState(true);
 
+    const items = React.Children.toArray(children);
+
     useEffect(() => {
         const el = containerRef.current;
         if (!el) return;
+
         const handleScroll = () => {
             if (showHint) setShowHint(false);
 
@@ -23,17 +26,15 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
             const idx = distances.indexOf(Math.min(...distances));
             if (idx !== currentIndex) setCurrentIndex(idx);
         };
+
         el.addEventListener('scroll', handleScroll, { passive: true });
         return () => el.removeEventListener('scroll', handleScroll);
     }, [currentIndex, showHint]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'ArrowRight') {
-                scrollTo(currentIndex + 1);
-            } else if (e.key === 'ArrowLeft') {
-                scrollTo(currentIndex - 1);
-            }
+            if (e.key === 'ArrowRight') scrollTo(currentIndex + 1);
+            if (e.key === 'ArrowLeft') scrollTo(currentIndex - 1);
         };
 
         window.addEventListener('keydown', handleKeyDown);
@@ -42,7 +43,7 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
 
     const scrollTo = (idx: number) => {
         const el = containerRef.current;
-        if (!el || idx < 0 || idx >= children.length) return;
+        if (!el || idx < 0 || idx >= items.length) return;
         if (showHint) setShowHint(false);
 
         const child = el.children[idx] as HTMLElement;
@@ -76,7 +77,7 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
                     px-[calc((100%-310px)/2)] md:px-[calc((100%-500px)/2)]
                 "
             >
-                {children.map((child, idx) => (
+                {items.map((child, idx) => (
                     <div
                         key={idx}
                         className={`w-[310px] md:w-[500px] h-[550px] flex-none scroll-snap-center transition-opacity duration-300 ${
@@ -89,9 +90,8 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
                 ))}
             </div>
 
-
             <div className="flex justify-center mt-4 gap-3">
-                {children.map((_, idx) => (
+                {items.map((_, idx) => (
                     <div
                         key={idx}
                         onClick={() => scrollTo(idx)}
