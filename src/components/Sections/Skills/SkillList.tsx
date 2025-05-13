@@ -1,46 +1,60 @@
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from "react";
+
+type Skill = {
+    name: string;
+    icon: string;
+};
 
 export const SkillList = ({
                               skills,
                               forceFull = false,
                               onOverflow,
                           }: {
-    skills: Record<string, string>;
+    skills: Skill[] | Record<string, string>; // acceptă și vechiul format
     forceFull?: boolean;
     onOverflow?: () => void;
 }) => {
     const contentRef = useRef<HTMLDivElement>(null);
     const [overflow, setOverflow] = useState(false);
 
+    // normalizează la array
+    const normalizedSkills: Skill[] = Array.isArray(skills)
+        ? skills
+        : Object.entries(skills).map(([name, icon]) => ({ name, icon }));
+
     useEffect(() => {
         if (contentRef.current && !forceFull) {
             const isOverflow = contentRef.current.scrollHeight > 260;
             setOverflow(isOverflow);
         }
-    }, [skills, forceFull]);
+    }, [normalizedSkills, forceFull]);
 
-// Separat: on click
     const handleSeeMore = () => {
         if (onOverflow) onOverflow();
     };
-
 
     return (
         <div
             ref={contentRef}
             className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[260px] overflow-hidden"
         >
-            {Object.entries(skills).map(([name, iconUrl]) => (
+            {normalizedSkills.map((skill) => (
                 <div
-                    key={name}
-                    className="flex items-center gap-2 bg-white text-neutral-900 px-4 py-2 rounded-2xl shadow-inner transition-all duration-300"
+                    key={skill.name}
+                    className="flex items-center gap-2 bg-white text-neutral-900 px-4 py-2 rounded-2xl shadow-inner transition-transform duration-200 hover:scale-105"
                 >
-
-                <img src={iconUrl} alt={name} className="w-5 h-5" />
-                    <span className="text-sm font-medium">{name}</span>
+                    <img
+                        src={skill.icon}
+                        alt={skill.name}
+                        className="w-5 h-5"
+                        onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = "/svgs/default.svg";
+                        }}
+                    />
+                    <span className="text-sm font-medium">{skill.name}</span>
                 </div>
-
             ))}
+
             {!forceFull && overflow && (
                 <button
                     onClick={handleSeeMore}

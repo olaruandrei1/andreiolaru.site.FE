@@ -1,5 +1,6 @@
 import { useCachedFetch } from './configuration/useCachedFetch';
 import api from './configuration/axios';
+import { ApiMap } from '../constants/ApiMap';
 
 export type MeData = {
     title: string;
@@ -10,7 +11,7 @@ export type MeData = {
 
 export const useMe = () => {
     return useCachedFetch<MeData>(
-        'me',
-        () => api.get('/me').then(res => res.data)
+        ApiMap.me.key,
+        () => api.get(ApiMap.me.url).then(res => res.data)
     );
 };

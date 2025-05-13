@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MorphBox } from '../../UI/Boxes/MorphBox';
 import { SkillList } from './SkillList';
-import { Carousel } from '../../UI/Carousel/GenericMotionCarousel';
+import { Carousel } from '../../UI/Carousel/Carousel.tsx';
 import { useSkills } from '../../../api/useSkills';
 
 export const Skills = ({ setDisableScroll }: { setDisableScroll?: (val: boolean) => void }) => {
@@ -24,7 +24,7 @@ export const Skills = ({ setDisableScroll }: { setDisableScroll?: (val: boolean)
         setDisableScroll?.(openIdx !== null);
     }, [openIdx, setDisableScroll]);
 
-    const maxItemsPerBox = isMobile ? 4 : 9;
+    const maxItemsPerBox = isMobile ? 4 : 6;
 
     useEffect(() => {
         if (loading || categories.length === 0) return;
@@ -62,19 +62,24 @@ export const Skills = ({ setDisableScroll }: { setDisableScroll?: (val: boolean)
                                 const cat = categories.find(c => c.id === id);
                                 if (!cat) return null;
 
-                                const skillEntries = Object.entries(cat.skills);
-                                const shouldShowButton = skillEntries.length > maxItemsPerBox;
+                                const shouldShowButton = (cat.skills ?? []).length > maxItemsPerBox;
                                 const shownSkills = shouldShowButton
-                                    ? Object.fromEntries(skillEntries.slice(0, maxItemsPerBox))
+                                    ? cat.skills.slice(0, maxItemsPerBox)
                                     : cat.skills;
 
                                 return (
                                     <MorphBox
                                         key={cat.id}
                                         title={cat.categoryName}
-                                        className="bg-white/90 backdrop-blur-md border border-neutral-200 shadow-[0_8px_24px_rgba(0,0,0,0.05)] text-neutral-900"
+                                        className="bg-white/90 backdrop-blur-md border border-neutral-200 shadow-[0_8px_24px_rgba(0,0,0,0.05)] text-neutral-900 text-center"
                                     >
-                                        <SkillList skills={shownSkills} />
+                                        <SkillList
+                                            skills={shownSkills.map((s) => ({
+                                                name: s.name,
+                                                icon: s.svgUrl,
+                                            }))}
+                                        />
+
                                         {shouldShowButton && (
                                             <div className="flex justify-center">
                                                 <button
@@ -109,10 +114,18 @@ export const Skills = ({ setDisableScroll }: { setDisableScroll?: (val: boolean)
                             onClick={(e) => e.stopPropagation()}
                         >
                             <MorphBox
+                                solid
                                 title={categories[openIdx]?.categoryName}
-                                className="bg-transparent shadow-none border-none text-neutral-900"
+                                className="bg-transparent shadow-none border-none text-center text-neutral-900"
                             >
-                                <SkillList skills={categories[openIdx]?.skills ?? {}} forceFull />
+                                <SkillList
+                                    skills={(categories[openIdx]?.skills ?? []).map((s) => ({
+                                        name: s.name,
+                                        icon: s.svgUrl,
+                                    }))}
+                                    forceFull
+                                />
+
                                 <button
                                     onClick={() => setOpenIdx(null)}
                                     className="mt-4 text-blue-600 font-semibold text-sm hover:underline"

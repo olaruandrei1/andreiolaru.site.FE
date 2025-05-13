@@ -58,15 +58,7 @@ export const Carousel: React.FC<CarouselProps> = ({ children }) => {
         <div className="relative w-full overflow-hidden pb-12">
             {showHint && (
                 <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-black/30 text-white text-sm text-center px-4 py-2 rounded-md pointer-events-none">
-                    ← Use arrows →
-                    <br />
-                    or
-                    <br />
-                    Trackpad
-                    <br />
-                    or
-                    <br />
-                    Pagination dots
+                   Scroll
                 </div>
             )}
 

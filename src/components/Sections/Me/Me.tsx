@@ -23,8 +23,13 @@ export const Me = () => {
 
             <img
                 src={imageUrl}
-                alt="Andrei"
-                className="max-h-[85vh] w-auto object-contain z-0"
+                alt="Well, something went wrong with my photo. Sorry about that :)."
+                className="
+                    w-auto object-contain z-0
+                    max-h-[80vh] md:max-h-[85vh]
+                    mt-[-10vh] md:mt-0
+                    translate-y-[-10%] md:translate-y-0
+                  "
                 style={{
                     maskImage:
                         'linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.85), rgba(0,0,0,0))',
@@ -45,7 +50,7 @@ export const Me = () => {
                         </h2>
                         <h3 className="text-lg md:text-xl font-mono text-blue-600 font-bold flex items-center justify-center mb-2">
                             {job}
-                            <span className="ml-2 animate-pulse">|</span>
+                            <span className="ml-2 animate-blink">|</span>
                         </h3>
                         <p className="text-base md:text-lg text-neutral-700 leading-relaxed">
                             {description}

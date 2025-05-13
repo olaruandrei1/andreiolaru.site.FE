@@ -1,15 +1,23 @@
 import { useCachedFetch } from './configuration/useCachedFetch.tsx';
 import api from './configuration/axios.tsx';
+import {ApiMap} from "../constants/ApiMap.tsx";
+
+export type Skill = {
+    name: string;
+    svgUrl: string;
+    order: number;
+};
 
 export type SkillCategory = {
     id: string;
     categoryName: string;
-    skills: Record<string, string>;
+    order: number;
+    skills: Skill[];
 };
 
 export const useSkills = () => {
     return useCachedFetch<SkillCategory[]>(
-        'skills',
-        () => api.get('/skills').then(res => res.data)
+        ApiMap.skills.key,
+        () => api.get(ApiMap.skills.url).then(res => res.data)
     );
 };

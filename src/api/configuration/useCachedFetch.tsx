@@ -16,7 +16,7 @@ export function useCachedFetch<T>(
     key: string,
     fetcher: () => Promise<T>,
     options?: {
-        ttl?: number; // default: 24h
+        ttl?: number;
         retryCount?: number;
         retryDelay?: number;
     }
@@ -37,7 +37,6 @@ export function useCachedFetch<T>(
             setLoading(true);
             setError(null);
 
-            // check cache
             const cachedRaw = localStorage.getItem(key);
             if (cachedRaw) {
                 try {
@@ -56,7 +55,6 @@ export function useCachedFetch<T>(
                 }
             }
 
-            // fetch with retry
             let attempts = 0;
             while (attempts <= retryCount) {
                 try {
@@ -71,13 +69,18 @@ export function useCachedFetch<T>(
                         })
                     );
                     setData(res);
+                    console.log(res)
                     setLoading(false);
                     return;
                 } catch (err) {
                     attempts++;
                     if (attempts > retryCount) {
                         if (isMounted) {
-                            setError((err as any)?.message || 'Fetch failed');
+                            if (err instanceof Error) {
+                                setError(err.message);
+                            } else {
+                                setError('Fetch failed');
+                            }
                             setLoading(false);
                         }
                         return;
@@ -91,7 +94,7 @@ export function useCachedFetch<T>(
         return () => {
             isMounted = false;
         };
-    }, [key, retrySignal.current]); // fetcher is intentionally ignored for stability
+    }, [key, retrySignal.current]);
 
     const retry = () => {
         retrySignal.current++;

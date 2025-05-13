@@ -1,5 +1,6 @@
 import { useCachedFetch } from './configuration/useCachedFetch';
 import api from './configuration/axios';
+import {ApiMap} from "../constants/ApiMap.tsx";
 
 export enum EducationVariant {
     CLASSIC = 'CLASSIC',
@@ -13,11 +14,12 @@ export type Education = {
     period: string;
     description: string;
     variant: EducationVariant;
+    photoPath: string;
 };
 
 export const useEducation = () => {
     return useCachedFetch<Education[]>(
-        'education',
-        () => api.get('/education').then(res => res.data)
+        ApiMap.education.key,
+        () => api.get(ApiMap.education.url).then(res => res.data)
     );
 };

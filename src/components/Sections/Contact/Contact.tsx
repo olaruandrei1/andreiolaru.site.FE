@@ -4,15 +4,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import TwitterIcon from '@mui/icons-material/Twitter';
 import { useSocialLinks } from '../../../api/useSocialLinks';
 import { useMediaQuery } from '@mui/material';
-import { Carousel } from '../../UI/Carousel/GenericMotionCarousel';
-import {sendContactMessage} from "../../../api/sendContactMessage.tsx";
-import {useMe} from "../../../api/useMe.tsx";
+import { Carousel } from '../../UI/Carousel/Carousel.tsx';
+import { sendContactMessage } from "../../../api/sendContactMessage.tsx";
+import { useMe } from "../../../api/useMe.tsx";
+import {SocialLinks} from "../../UI/SharedLinks/SocialLinks.tsx";
+import {LinkedInCard} from "../../UI/Cards/LinkedInCard.tsx";
 
 export const Contact: React.FC = () => {
     const { data: links, loading: linksLoading } = useSocialLinks();
@@ -62,18 +60,15 @@ export const Contact: React.FC = () => {
             id="contact"
             className="min-h-screen py-16 px-6 flex flex-col items-center justify-start overflow-y-auto"
         >
-            {/* Header text */}
             <Box className="max-w-2xl w-full text-center mb-12">
                 <Typography variant="h4" className="!text-3xl md:!text-4xl !font-semibold !text-neutral-900 mb-4">
                     Get in Touch
                 </Typography>
             </Box>
 
-            {/* Form + LinkedIn Card */}
             {isMobile ? (
                 <>
                     <Carousel>
-                        {/* Slide 1 - Form */}
                         <div>
                             <MorphBox className="p-4">
                                 {submitted ? (
@@ -83,7 +78,7 @@ export const Contact: React.FC = () => {
                                 ) : (
                                     <Box component="form" noValidate onSubmit={handleSubmit} className="grid gap-4">
                                         <Typography variant="body1" className="!text-base !text-neutral-600 text-center">
-                                            Have a question or just want to say hi? <br/>Fill out the form and I’ll get back to you shortly.
+                                            Have a question or just want to say hi? <br />Fill out the form and I’ll get back to you shortly.
                                         </Typography>
                                         <TextField
                                             label="Name"
@@ -123,72 +118,27 @@ export const Contact: React.FC = () => {
                             </MorphBox>
                         </div>
 
-                        {/* Slide 2 - Card */}
                         <div className="flex items-center justify-center">
-                            <div className="w-full max-w-sm rounded-2xl shadow-lg bg-white p-6 border border-neutral-200 text-center">
-                                <img
-                                    src="https://avatars.githubusercontent.com/u/000000?v=4"
-                                    alt="LinkedIn profile"
-                                    className="w-24 h-24 rounded-full mx-auto mb-4"
-                                />
-                                <h3 className="text-lg font-semibold text-neutral-900">
-                                    {me?.title}
-                                </h3>
-                                <p className="text-sm text-neutral-600 mb-4">
-                                    {me?.job}
-                                </p>
-                                <a
-                                    href={links?.linkedin}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-full hover:bg-blue-700 transition"
-                                >
-                                    Connect on LinkedIn ↗
-                                </a>
-                            </div>
+                            <LinkedInCard
+                                name="Olaru Andrei"
+                                job={me?.job ?? ''}
+                                imageUrl={me?.imageUrl ?? ''}
+                                linkedinUrl={links?.linkedin ?? '#'}
+                            />
                         </div>
 
-                        {/* Slide 3 - Social Icons */}
                         {!linksLoading && links && (
                             <div className="flex items-center justify-center">
                                 <MorphBox className="p-6 text-center">
-                                    <Typography variant="body1" className="mb-4 text-gray-600">
-                                        You can also find me here:
-                                    </Typography>
-                                    <Box className="flex justify-center gap-6 text-gray-700 text-2xl">
-                                        <IconButton component="a" href={links.linkedin} target="_blank" className="hover:text-blue-600 transition">
-                                            <LinkedInIcon fontSize="large" />
-                                        </IconButton>
-                                        <IconButton component="a" href={links.github} target="_blank" className="hover:text-gray-900 transition">
-                                            <GitHubIcon fontSize="large" />
-                                        </IconButton>
-                                        <IconButton component="a" href={links.x} target="_blank" className="hover:text-blue-400 transition">
-                                            <TwitterIcon fontSize="large" />
-                                        </IconButton>
-                                    </Box>
+                                    <SocialLinks {...links} />
                                 </MorphBox>
                             </div>
                         )}
-
                     </Carousel>
 
-                    {/* Social Links on mobile explicitly rendered */}
                     {!linksLoading && links && (
                         <Box className="w-full mt-10 text-center z-10 relative">
-                            <Typography variant="body1" className="mb-2 text-gray-600">
-                                You can also find me here:
-                            </Typography>
-                            <Box className="flex justify-center gap-6 text-gray-700 text-2xl">
-                                <IconButton component="a" href={links.linkedin} target="_blank" className="hover:text-blue-600 transition">
-                                    <LinkedInIcon fontSize="large" />
-                                </IconButton>
-                                <IconButton component="a" href={links.github} target="_blank" className="hover:text-gray-900 transition">
-                                    <GitHubIcon fontSize="large" />
-                                </IconButton>
-                                <IconButton component="a" href={links.x} target="_blank" className="hover:text-blue-400 transition">
-                                    <TwitterIcon fontSize="large" />
-                                </IconButton>
-                            </Box>
+                            <SocialLinks {...links} />
                         </Box>
                     )}
                 </>
@@ -241,47 +191,18 @@ export const Contact: React.FC = () => {
                             </MorphBox>
                         </Box>
                         <Box className="flex items-center justify-center">
-                            <div className="w-full max-w-sm rounded-2xl shadow-lg bg-white p-6 border border-neutral-200 text-center">
-                                <img
-                                    src="https://avatars.githubusercontent.com/u/000000?v=4"
-                                    alt="LinkedIn profile"
-                                    className="w-24 h-24 rounded-full mx-auto mb-4"
-                                />
-                                <h3 className="text-lg font-semibold text-neutral-900">
-                                    {me?.title}
-                                </h3>
-                                <p className="text-sm text-neutral-600 mb-4">
-                                    {me?.job}
-                                </p>
-                                <a
-                                    href={links?.linkedin}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-full hover:bg-blue-700 transition"
-                                >
-                                    Connect on LinkedIn ↗
-                                </a>
-                            </div>
+                            <LinkedInCard
+                                name="Olaru Andrei"
+                                job={me?.job ?? ''}
+                                imageUrl={me?.imageUrl ?? ''}
+                                linkedinUrl={links?.linkedin ?? '#'}
+                            />
                         </Box>
                     </Box>
 
-                    {/* Social Links */}
                     {!linksLoading && links && (
-                        <Box className="w-full mt-10 text-center z-10">
-                            <Typography variant="body1" className="mb-2 text-gray-600">
-                                You can also find me here:
-                            </Typography>
-                            <Box className="flex justify-center gap-6 text-gray-700 text-2xl">
-                                <IconButton component="a" href={links.linkedin} target="_blank" className="hover:text-blue-600 transition">
-                                    <LinkedInIcon fontSize="large" />
-                                </IconButton>
-                                <IconButton component="a" href={links.github} target="_blank" className="hover:text-gray-900 transition">
-                                    <GitHubIcon fontSize="large" />
-                                </IconButton>
-                                <IconButton component="a" href={links.x} target="_blank" className="hover:text-blue-400 transition">
-                                    <TwitterIcon fontSize="large" />
-                                </IconButton>
-                            </Box>
+                        <Box className="w-full mt-20 text-center z-10">
+                            <SocialLinks {...links} />
                         </Box>
                     )}
                 </>

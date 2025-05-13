@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { MorphBox } from '../../UI/Boxes/MorphBox';
 import { useExperience } from '../../../api/useExperience';
-import { Carousel } from '../../UI/Carousel/GenericMotionCarousel';
+import { Carousel } from '../../UI/Carousel/Carousel.tsx';
 import { ExperienceCard } from '../../UI/Cards/ExperienceCard.tsx';
+import {formatBullets} from "../../Helpers/FormatDots.tsx";
 
 type Props = {
     setDisableScroll: (val: boolean) => void;
@@ -60,6 +61,7 @@ export const Experience: React.FC<Props> = ({ setDisableScroll }) => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <MorphBox
+                            solid
                             className="bg-transparent border-none shadow-none text-neutral-900"
                             style={{ padding: '2rem' }}
                         >
@@ -72,7 +74,7 @@ export const Experience: React.FC<Props> = ({ setDisableScroll }) => {
                                 data-scroll-lock="true"
                                 className="max-h-[300px] overflow-y-auto pr-2 text-base text-neutral-900 leading-relaxed whitespace-pre-wrap"
                             >
-                                {data[openIdx].description}
+                                {formatBullets(data[openIdx].description)}
                             </div>
                             <button
                                 onClick={() => setOpenIdx(null)}

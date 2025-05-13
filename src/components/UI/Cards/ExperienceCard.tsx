@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MorphBox } from '../Boxes/MorphBox.tsx';
 import { Experience as ExpType } from '../../../api/useExperience.tsx';
+import {formatBullets} from "../../Helpers/FormatDots.tsx";
 
 type Props = {
     exp: ExpType;
@@ -19,6 +20,7 @@ export const ExperienceCard: React.FC<Props> = ({ exp, onReadMore }) => {
 
     return (
         <MorphBox
+            imageUrl={exp.photoPath}
             className="w-full h-full flex flex-col gap-2 box-border px-4 py-6 md:px-6 md:py-8
       max-w-[310px] sm:max-w-[320px] md:max-w-md text-sm md:text-base mx-auto"
         >
@@ -26,7 +28,7 @@ export const ExperienceCard: React.FC<Props> = ({ exp, onReadMore }) => {
             <p className="text-sm md:text-lg text-neutral-500">{exp.company}</p>
             <p className="text-xs md:text-sm text-neutral-500">{exp.period}</p>
 
-            <p
+            <div
                 ref={descRef}
                 className="text-sm md:text-base text-neutral-900 leading-relaxed flex-grow overflow-hidden line-clamp-[10]"
                 style={{
@@ -35,8 +37,8 @@ export const ExperienceCard: React.FC<Props> = ({ exp, onReadMore }) => {
                     overflow: 'hidden',
                 }}
             >
-                {exp.description}
-            </p>
+                {formatBullets(exp.description)}
+            </div>
 
             {isOverflowing && (
                 <button

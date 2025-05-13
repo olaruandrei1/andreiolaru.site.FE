@@ -1,5 +1,6 @@
 import { useCachedFetch } from './configuration/useCachedFetch';
 import api from './configuration/axios';
+import {ApiMap} from "../constants/ApiMap.tsx";
 
 export type Project = {
     title: string;
@@ -8,7 +9,7 @@ export type Project = {
 };
 
 export const useProjects = () => {
-    return useCachedFetch<Project[]>('projects', () =>
-        api.get('/projects').then(res => res.data)
+    return useCachedFetch<Project[]>(ApiMap.projects.key, () =>
+        api.get(ApiMap.projects.url).then(res => res.data)
     );
 };

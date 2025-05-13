@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MorphBox } from '../../UI/Boxes/MorphBox';
 import { useEducation } from '../../../api/useEducation';
-import { Carousel } from '../../UI/Carousel/GenericMotionCarousel';
+import { Carousel } from '../../UI/Carousel/Carousel.tsx';
 import {EducationCard} from "../../UI/Cards/EducationCard.tsx";
 
 export const Education: React.FC = () => {
@@ -54,7 +54,7 @@ export const Education: React.FC = () => {
                                     boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
                                 }}
                             >
-                                <MorphBox>
+                                <MorphBox solid>
                                     <h3 className="text-2xl font-semibold text-neutral-900 mb-2">
                                         {data[openIdx].degree}
                                     </h3>

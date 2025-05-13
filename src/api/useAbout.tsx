@@ -1,5 +1,6 @@
 import { useCachedFetch } from './configuration/useCachedFetch';
 import api from './configuration/axios';
+import {ApiMap} from "../constants/ApiMap.tsx";
 
 export type AboutData = {
     whoIAm: { title: string; content: string };
@@ -9,7 +10,7 @@ export type AboutData = {
 
 export const useAbout = () => {
     return useCachedFetch<AboutData>(
-        'about',
-        () => api.get('/about').then(res => res.data)
+        ApiMap.about.key,
+        () => api.get(ApiMap.about.url).then(res => res.data)
     );
 };

@@ -1,5 +1,6 @@
 import { useCachedFetch } from './configuration/useCachedFetch';
 import api from './configuration/axios';
+import {ApiMap} from "../constants/ApiMap.tsx";
 
 export type SocialLinks = {
     linkedin: string;
@@ -9,7 +10,7 @@ export type SocialLinks = {
 
 export const useSocialLinks = () => {
     return useCachedFetch<SocialLinks>(
-        'social-links',
-        () => api.get('/contact').then(res => res.data)
+        ApiMap.contact.key,
+        () => api.get(ApiMap.contact.url).then(res => res.data)
     );
 };
