@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, Children } from 'react';
 
 type MiniCarouselProps = {
     children: React.ReactNode;
@@ -30,7 +30,7 @@ export const MiniCarousel: React.FC<MiniCarouselProps> = ({ children, speed = 30
             frameId = requestAnimationFrame(step);
         };
 
-        const start = () => frameId = requestAnimationFrame(step);
+        const start = () => (frameId = requestAnimationFrame(step));
         const stop = () => cancelAnimationFrame(frameId);
 
         start();
@@ -45,6 +45,9 @@ export const MiniCarousel: React.FC<MiniCarouselProps> = ({ children, speed = 30
         };
     }, [speed]);
 
+    const childrenArray = Children.toArray(children);
+    const shouldDuplicate = childrenArray.length >= 3;
+
     return (
         <div
             ref={containerRef}
@@ -52,8 +55,8 @@ export const MiniCarousel: React.FC<MiniCarouselProps> = ({ children, speed = 30
             onClick={onClick}
         >
             <div className="flex gap-2 w-max animate-none">
-                {children}
-                {children}
+                {childrenArray}
+                {shouldDuplicate && childrenArray}
             </div>
         </div>
     );

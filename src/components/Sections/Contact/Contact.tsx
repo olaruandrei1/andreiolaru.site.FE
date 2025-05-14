@@ -11,12 +11,13 @@ import { sendContactMessage } from "../../../api/sendContactMessage.tsx";
 import { useMe } from "../../../api/useMe.tsx";
 import {SocialLinks} from "../../UI/SharedLinks/SocialLinks.tsx";
 import {LinkedInCard} from "../../UI/Cards/LinkedInCard.tsx";
+import Swal from 'sweetalert2';
 
 export const Contact: React.FC = () => {
     const { data: links, loading: linksLoading } = useSocialLinks();
     const { data: me } = useMe();
 
-    const [form, setForm] = useState({ name: '', email: '', message: '' });
+    const [form, setForm] = useState({ subject: '', email: '', message: '' });
     const [errors, setErrors] = useState<{ [K in keyof typeof form]?: string }>({});
     const [submitted, setSubmitted] = useState(false);
     const isMobile = useMediaQuery('(max-width: 768px)');
@@ -29,7 +30,7 @@ export const Contact: React.FC = () => {
 
     const validate = () => {
         const newErrors: typeof errors = {};
-        if (!form.name.trim()) newErrors.name = 'Name is required';
+        if (!form.subject.trim()) newErrors.subject = 'Subject is required';
         if (!form.email.trim()) newErrors.email = 'Email is required';
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
             newErrors.email = 'Invalid email';
@@ -47,11 +48,27 @@ export const Contact: React.FC = () => {
 
         try {
             await sendContactMessage(form);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Message sent!',
+                text: 'Thanks for reaching out — I’ll get back to you shortly.',
+                confirmButtonColor: '#3085d6',
+            });
+
+            setForm({ email: '', subject: '', message: '' }); // optional: reset form
             setSubmitted(true);
         } catch (err) {
             console.error('Failed to send message:', err);
-            alert('Oops! Something went wrong. Please try again later.');
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong. Please try again later.',
+                confirmButtonColor: '#d33',
+            });
         }
+
     };
 
     return (
@@ -81,12 +98,12 @@ export const Contact: React.FC = () => {
                                             Have a question or just want to say hi? <br />Fill out the form and I’ll get back to you shortly.
                                         </Typography>
                                         <TextField
-                                            label="Name"
-                                            name="name"
-                                            value={form.name}
+                                            label="Subject"
+                                            name="subject"
+                                            value={form.subject}
                                             onChange={handleChange}
-                                            error={!!errors.name}
-                                            helperText={errors.name}
+                                            error={!!errors.subject}
+                                            helperText={errors.subject}
                                             fullWidth
                                         />
                                         <TextField
@@ -154,12 +171,12 @@ export const Contact: React.FC = () => {
                                 ) : (
                                     <Box component="form" noValidate onSubmit={handleSubmit} className="grid gap-4">
                                         <TextField
-                                            label="Name"
-                                            name="name"
-                                            value={form.name}
+                                            label="Subject"
+                                            name="subject"
+                                            value={form.subject}
                                             onChange={handleChange}
-                                            error={!!errors.name}
-                                            helperText={errors.name}
+                                            error={!!errors.subject}
+                                            helperText={errors.subject}
                                             fullWidth
                                         />
                                         <TextField

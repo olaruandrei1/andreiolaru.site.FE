@@ -2,7 +2,7 @@ import api from './configuration/axios';
 import {ApiMap} from "../constants/ApiMap.tsx";
 
 export type ContactPayload = {
-    name: string;
+    subject: string;
     email: string;
     message: string;
 };
